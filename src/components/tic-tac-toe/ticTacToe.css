@@ -4,6 +4,9 @@
     grid-template-rows: repeat(3, 1fr);
     grid-column-gap: 20px;
     grid-row-gap: 20px;
+    height: 100%;
+    width: 100%;
+    background-color: white;
 }
 
 .div1 {
@@ -32,4 +35,9 @@
 }
 .div9 {
     grid-area: 3 / 3 / 4 / 4;
+}
+
+.grid-item-body {
+    min-width: 30%;
+    min-height: 30%;
 }

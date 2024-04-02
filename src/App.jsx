@@ -1,5 +1,5 @@
 import "./App.css";
-import TicTacToe from "./components/tic-tac-toe/tic-tac-toe";
+import TicTacToe from "./components/tic-tac-toe/ticTacToe";
 
 function App() {
   return (

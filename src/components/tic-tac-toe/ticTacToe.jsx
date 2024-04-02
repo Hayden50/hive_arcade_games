@@ -1,12 +1,11 @@
-import "./tic-tac-toe.css";
+import GridItem from "./gridItem";
+import "./ticTacToe.css";
 
 const TicTacToe = () => {
   return (
     <div className="grid-container">
       <div className="div1">
-        <button>
-          <p> Hello </p>
-        </button>
+        <GridItem id="1" />
       </div>
       <div className="div2"> 2 </div>
       <div className="div3"> 3 </div>

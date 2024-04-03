@@ -1,0 +1,17 @@
+.container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.title {
+    font-size: 500%;
+    margin-top: 20%;
+    font-style: italic;
+}
+
+.modal-button {
+    padding: 15px;
+}

@@ -5,21 +5,25 @@ import WordHunt from "./components/WordHunt";
 
 function App() {
   return (
-    <>
+    <div className="container">
       <div>
-        <p>This will be the landing page for the application</p>
+        <h1 className="title">Hive Arcade</h1>
       </div>
-      <GameModal
-        id="WordHunt "
-        title="Word Hunt"
-        gameComponent={<WordHunt />}
-      />
-      <GameModal
-        id="WordHunt"
-        title="Tic-Tac-Toe"
-        gameComponent={<TicTacToe />}
-      />
-    </>
+      <div className="modal-button">
+        <GameModal
+          id="WordHunt "
+          title="Word Hunt"
+          gameComponent={<WordHunt />}
+        />
+      </div>
+      <div className="modal-button">
+        <GameModal
+          id="WordHunt"
+          title="Tic-Tac-Toe"
+          gameComponent={<TicTacToe />}
+        />
+      </div>
+    </div>
   );
 }
 

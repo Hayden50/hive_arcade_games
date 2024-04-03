@@ -2,10 +2,12 @@ import "./App.css";
 import GameModal from "./components/GameModal";
 import TicTacToe from "./components/tic-tac-toe/TicTacToe";
 import WordHunt from "./components/WordHunt";
+import Banner from "./components/banner/Banner";
 
 function App() {
   return (
     <div className="container">
+      <Banner />
       <div>
         <h1 className="title">Hive Arcade</h1>
       </div>

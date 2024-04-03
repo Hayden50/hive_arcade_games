@@ -4,6 +4,11 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
+import Slide from "@mui/material/Slide";
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 const GameModal = ({ id, title, gameComponent }) => {
   const [open, setOpen] = React.useState(false);
@@ -13,10 +18,16 @@ const GameModal = ({ id, title, gameComponent }) => {
 
   return (
     <React.Fragment>
-      <Button variant="outlined" onClick={handleClickOpen}>
+      <Button variant="outlined" onClick={handleClickOpen} size="large">
         {title}
       </Button>
-      <Dialog open={open} onClose={handleClose} maxWidth="lg" fullWidth={true}>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        maxWidth="lg"
+        fullWidth={true}
+        TransitionComponent={Transition}
+      >
         <DialogTitle id={id} justifyContent="center">
           {title}
         </DialogTitle>

@@ -1,4 +1,4 @@
-import GridItem from "./gridItem";
+import GridItem from "./GridItem";
 import "./ticTacToe.css";
 
 const TicTacToe = () => {

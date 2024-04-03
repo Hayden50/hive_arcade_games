@@ -1,6 +1,6 @@
 import "./App.css";
 import GameModal from "./components/GameModal";
-import TicTacToe from "./components/tic-tac-toe/ticTacToe";
+import TicTacToe from "./components/tic-tac-toe/TicTacToe";
 import WordHunt from "./components/WordHunt";
 
 function App() {

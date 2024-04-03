@@ -1,4 +1,6 @@
 import "./App.css";
+import WordHunt from "./components/WordHunt";
+import WordHuntModal from "./components/WordHuntModal";
 
 function App() {
   return (
@@ -7,7 +9,7 @@ function App() {
         <p>This will be the landing page for the application</p>
       </div>
       <button>Game 1</button>
-      <button>Game 2</button>
+      <WordHuntModal/>
     </>
   );
 }

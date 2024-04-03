@@ -1,11 +1,7 @@
 import "./ticTacToe.css";
 
 const GridItem = (props) => {
-  return (
-    <div className="grid-item-body">
-      <button>{props.id}</button>
-    </div>
-  );
+  return <button className="selector-button">{props.id}</button>;
 };
 
 export default GridItem;

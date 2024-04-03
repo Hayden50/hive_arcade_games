@@ -1,37 +1,28 @@
+import Grid from "@mui/material/Unstable_Grid2";
 import GridItem from "./GridItem";
 import "./ticTacToe.css";
 
+const borderStyling = {
+  "--Grid-borderWidth": "2px",
+  borderTop: "var(--Grid-borderWidth) solid",
+  borderLeft: "var(--Grid-borderWidth) solid",
+  borderColor: "divider",
+  "& > div": {
+    borderRight: "var(--Grid-borderWidth) solid",
+    borderBottom: "var(--Grid-borderWidth) solid",
+    borderColor: "divider",
+  },
+};
+
 const TicTacToe = () => {
   return (
-    <div className="grid-container">
-      <div className="div1">
-        <GridItem id="1" />
-      </div>
-      <div className="div2">
-        <GridItem id="2" />
-      </div>
-      <div className="div3">
-        <GridItem id="3" />
-      </div>
-      <div className="div4">
-        <GridItem id="4" />
-      </div>
-      <div className="div5">
-        <GridItem id="5" />
-      </div>
-      <div className="div6">
-        <GridItem id="6" />
-      </div>
-      <div className="div7">
-        <GridItem id="7" />
-      </div>
-      <div className="div8">
-        <GridItem id="8" />
-      </div>
-      <div className="div9">
-        <GridItem id="9" />
-      </div>
-    </div>
+    <Grid container spacing={2} sx={borderStyling}>
+      {[...Array(9)].map((_, index) => (
+        <Grid key={index} xs={4} minHeight={160}>
+          <GridItem id={index}></GridItem>
+        </Grid>
+      ))}
+    </Grid>
   );
 };
 

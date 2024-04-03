@@ -16,10 +16,12 @@ const GameModal = ({ id, title, gameComponent }) => {
       <Button variant="outlined" onClick={handleClickOpen}>
         {title}
       </Button>
-      <Dialog open={open} onClose={handleClose}>
+      <Dialog open={open} onClose={handleClose} maxWidth="lg" fullWidth={true}>
         <DialogTitle id={id} justifyContent="center">
           {title}
         </DialogTitle>
+        <div></div>{" "}
+        {/* ^ For some reason this is needed to show top line in TTT  */}
         <DialogContent>{gameComponent}</DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Close</Button>

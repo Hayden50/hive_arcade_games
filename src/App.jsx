@@ -16,7 +16,7 @@ function App() {
       />
       <GameModal
         id="WordHunt"
-        title="TicTacToe"
+        title="Tic-Tac-Toe"
         gameComponent={<TicTacToe />}
       />
     </>

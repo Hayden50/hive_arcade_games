@@ -1,0 +1,11 @@
+.selector-button {
+    min-width: 100%;
+    min-height: 100%;
+    background-color: white;
+    border: 0px;
+    color: black;
+}
+
+.marking {
+    font-size: 3em;
+}

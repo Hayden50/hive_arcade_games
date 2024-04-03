@@ -1,6 +1,7 @@
 import "./App.css";
+import GameModal from "./components/GameModal";
+import TicTacToe from "./components/tic-tac-toe/TicTacToe";
 import WordHunt from "./components/WordHunt";
-import WordHuntModal from "./components/WordHuntModal";
 
 function App() {
   return (
@@ -8,8 +9,16 @@ function App() {
       <div>
         <p>This will be the landing page for the application</p>
       </div>
-      <button>Game 1</button>
-      <WordHuntModal/>
+      <GameModal
+        id="WordHunt "
+        title="Word Hunt"
+        gameComponent={<WordHunt />}
+      />
+      <GameModal
+        id="WordHunt"
+        title="Tic-Tac-Toe"
+        gameComponent={<TicTacToe />}
+      />
     </>
   );
 }

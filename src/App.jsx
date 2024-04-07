@@ -8,8 +8,11 @@ function App() {
   return (
     <div className="container">
       <Banner />
-      <div>
+      <div className="title-container">
         <h1 className="title">Hive Arcade</h1>
+        <p className="description">
+          A decentralized game suite for Georgia Tech students
+        </p>
       </div>
       <div className="modal-button">
         <GameModal

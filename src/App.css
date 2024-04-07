@@ -7,11 +7,25 @@
 }
 
 .title {
-    font-size: 500%;
-    margin-top: 15%;
+    font-size: 650%;
+    /* margin-top: 15%; */
+    margin-bottom: 0px;
     font-style: italic;
+    padding-bottom: 0px;
+    color: #003057;
 }
 
 .modal-button {
     padding: 15px;
+}
+
+.title-container {
+}
+
+.description {
+    padding-top: 0px;
+    margin-top: 0px;
+    display: flex;
+    justify-content: center;
+    color: #003057;
 }

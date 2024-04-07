@@ -9,6 +9,7 @@ const Banner = () => {
         <PersonIcon fontSize="large" />
       </button>
       <button className="trophy banner-button">
+        <h2 className="trophy-number">trophy_count_here</h2>
         <EmojiEventsIcon fontSize="large" />
       </button>
     </div>

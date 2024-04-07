@@ -17,4 +17,12 @@
 
 .trophy {
     margin-right: 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.trophy-number {
+    margin-right: 10px;
+    font-style: italic;
 }

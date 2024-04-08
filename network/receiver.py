@@ -1,3 +1,5 @@
+# This file blocks, waiting for the sender message.
+
 import socket
 
 # Set up the UDP socket

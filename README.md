@@ -12,4 +12,4 @@ https://nodejs.org/en/download/
 
 ## Startup Guide
 
-### Run `./start.sh` from the root dir
+Run `./start.sh` from the root dir

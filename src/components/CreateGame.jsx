@@ -25,7 +25,7 @@ export default function CreateGame( {} ) {
         <Button variant="outlined" onClick={() => { handleBroadcastGame('WordHunt') }}>
             WordHunt
         </Button>
-        <Button variant="outlined">
+        <Button variant="outlined" onClick={() => { handleBroadcastGame('TicTacToe') }}>
             TicTacToe
         </Button>
         </>

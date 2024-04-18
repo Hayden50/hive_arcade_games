@@ -45,13 +45,14 @@ def broadcast():
 
     gameInfo = request.get_json()
     gameType = gameInfo['GameType']
-    userInfo = gameInfo['User']
+    userInfo = str(gameInfo['User'])
+    gameRequestMessage = gameType + " game request by:" + userInfo
     
     try:
         # Send the broadcast message
-        sock.sendto(gameType.encode(), (UDP_IP, UDP_PORT))
-        sock.sendto(gameType.encode(), (UDP_IP, 5006))
-        print(gameType, "GAME REQUESTED BY:", userInfo)
+        sock.sendto(gameRequestMessage.encode(), (UDP_IP, UDP_PORT))
+        sock.sendto(gameRequestMessage.encode(), (UDP_IP, 5006))
+        print(gameRequestMessage)
 
     finally:
         # Close the socket

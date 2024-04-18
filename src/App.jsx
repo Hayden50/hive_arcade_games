@@ -1,13 +1,15 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import GameModal from "./components/GameModal";
 import TicTacToe from "./components/tic-tac-toe/TicTacToe";
 import WordHunt from "./components/WordHunt";
-import { Button, IconButton } from "@mui/material";
+import { Button, IconButton, List, ListItem, ListItemButton, ListItemText } from "@mui/material";
 import ReplayIcon from '@mui/icons-material/Replay';
 import CreateGame from "./components/CreateGame";
 
 function App() {
+
+  const [existingGames, setExistingGames] = useState([]);
 
   const broadcastGame = async() => {
     fetch("http://localhost:5000/broadcast").then(res => res.json()).then(data => {
@@ -20,6 +22,7 @@ function App() {
 
   const findGames = async() => {
     fetch("http://localhost:5000/findNodes", {method: "GET"}).then(res => res.json()).then(data => {
+      setExistingGames(data.Data);
       console.log(data.Data);
     })
   }
@@ -51,6 +54,17 @@ function App() {
         title="Create Game"
         gameComponent={<CreateGame/>}
       />
+      <List>
+        {existingGames.map(function(data) {
+          return (
+            <ListItem disablePadding>
+              <ListItemButton>
+                <ListItemText primary={data} />
+              </ListItemButton>
+            </ListItem>
+          )
+        })}
+      </List>
     </>
   );
 }

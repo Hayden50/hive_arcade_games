@@ -5,33 +5,22 @@ import { useState, useEffect } from "react";
 
 const Banner = () => {
   const [username, setUsername] = useState("");
-  const [trophy, setTrophies] = useState(0);
+  const [trophies, setTrophies] = useState(0);
 
   useEffect(() => {
-    const checkUsername = async () => {
+    const getUserData = async () => {
       try {
-        const response = await fetch("http://localhost:5000/username");
+        const response = await fetch("http://localhost:5000/getUserData");
         const data = await response.json();
         console.log(data);
-        setUsername(data);
+        setUsername(data.username);
+        setTrophies(data.trophies);
       } catch (error) {
         console.error("There was a problem with the fetch operation:", error);
       }
     };
 
-    const checkTrophies = async () => {
-      try {
-        const response = await fetch("http://localhost:5000/trophy");
-        const data = await response.json();
-        console.log(data);
-        setTrophies(data);
-      } catch (error) {
-        console.error("There was a problem with the fetch operation:", error);
-      }
-    };
-
-    checkUsername();
-    checkTrophies();
+    getUserData();
   }, []); // Empty dependency array ensures the effect runs only on mount
 
   return (
@@ -39,11 +28,11 @@ const Banner = () => {
       <button className="person banner-button">
         <PersonIcon fontSize="large" />
         <h2 className="username">
-          {username.data === "" ? "Click here to log in!" : username.data}
+          {username === "" ? "Click here to log in!" : username}
         </h2>
       </button>
       <button className="trophy banner-button">
-        <h2 className="trophy-number">{trophy.data}</h2>
+        <h2 className="trophy-number">{trophies}</h2>
         <EmojiEventsIcon fontSize="large" />
       </button>
     </div>

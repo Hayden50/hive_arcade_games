@@ -61,32 +61,27 @@ def broadcast():
         sock.close()
         return {'data': gameInfo}
 
-@app.route("/username", methods=['GET'])
-def check_username():
-    file_path = "./network/username.txt"
+@app.route("/getUserData", methods=['GET'])
+def check_trophy():
+    username_file_path = "./network/username.txt"
+    trophy_file_path = "./network/trophy.txt"
+
+    trophies = "0"
     uname = ""
 
-    if os.path.exists(file_path):
-        with open(file_path, 'r') as file:
+    if os.path.exists(username_file_path):
+        with open(username_file_path, 'r') as file:
             uname = file.read().strip()
 
-    res = {'data': uname}
-    return jsonify(res)
-
-@app.route("/trophy", methods=['GET'])
-def check_trophy():
-    file_path = "./network/trophy.txt"
-    uname = "0"
-
-    if os.path.exists(file_path):
-        with open(file_path, 'r') as file:
-            uname = file.read().strip()
+    if os.path.exists(trophy_file_path):
+        with open(trophy_file_path, 'r') as file:
+            trophies = file.read().strip()
     else:
         # Creates a new file with 0 trophies
-        with open(file_path, 'w') as file:
+        with open(trophy_file_path, 'w') as file:
             file.write('0')
 
-    res = {'data': uname}
+    res = {'trophies': trophies, 'username': uname}
     return jsonify(res)
 
 

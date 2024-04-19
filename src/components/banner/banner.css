@@ -1,0 +1,30 @@
+.banner-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.banner-button {
+    margin-top: 5px;
+    border: none;
+    background: none;
+}
+
+.person {
+    margin-left: 10px;
+    color: #b3a369;
+}
+
+.trophy {
+    margin-right: 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    color: #b3a369;
+}
+
+.trophy-number {
+    margin-right: 10px;
+    font-style: italic;
+}

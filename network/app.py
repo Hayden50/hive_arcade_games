@@ -93,5 +93,11 @@ def create_username():
 
     return data
 
+@app.route("/deleteUser", methods=['POST'])
+def delete_user():
+    os.remove("./network/username.txt")
+    res = {'status': 200}
+    return jsonify(res)
+
 if __name__ == "__main__":
     app.run(debug=True)

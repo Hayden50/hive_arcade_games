@@ -12,9 +12,18 @@ const Banner = () => {
   const [trophies, setTrophies] = useState(0);
   const [textFieldValue, setTextFieldValue] = useState("");
 
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const [createOpen, createSetOpen] = useState(false);
+  const [deleteOpen, deleteSetOpen] = useState(false);
+
+  const handleOpen = () => {
+    if (username === "") createSetOpen(true);
+    else deleteSetOpen(true);
+  };
+
+  const handleClose = () => {
+    createSetOpen(false);
+    deleteSetOpen(false);
+  };
 
   const handleTextFieldChange = (event) => {
     setTextFieldValue(event.target.value);
@@ -46,6 +55,23 @@ const Banner = () => {
     setTextFieldValue("");
   };
 
+  const handleLogout = () => {
+    fetch("http://localhost:5000/deleteUser", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.status === 200) {
+          setUsername("");
+          handleClose();
+        }
+      })
+      .catch((error) => console.log(error));
+  };
+
   useEffect(() => {
     const getUserData = async () => {
       try {
@@ -64,7 +90,7 @@ const Banner = () => {
   return (
     <>
       <Modal
-        open={open}
+        open={createOpen}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
@@ -87,6 +113,23 @@ const Banner = () => {
           </Button>
         </Box>
       </Modal>
+
+      <Modal
+        open={deleteOpen}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <div className="greeting-container">
+            <h1 className="greeting">Hello {username}</h1>
+          </div>
+          <Button variant="contained" size="medium" onClick={handleLogout}>
+            Logout
+          </Button>
+        </Box>
+      </Modal>
+
       <div className="banner-container">
         <button className="person banner-button" onClick={handleOpen}>
           <PersonIcon fontSize="large" />

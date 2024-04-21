@@ -36,3 +36,14 @@
     margin-left: 10px;
     font-style: italic;
 }
+
+.greeting {
+    color: #003057;
+}
+
+.greeting-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}

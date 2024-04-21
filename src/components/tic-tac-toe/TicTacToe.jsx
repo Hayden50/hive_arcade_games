@@ -17,7 +17,7 @@ const TicTacToe = () => {
 
   useEffect(() => {
     initialSetup();
-  });
+  }, []);
 
   return (
     <div>

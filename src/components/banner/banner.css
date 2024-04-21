@@ -14,6 +14,9 @@
 .person {
     margin-left: 10px;
     color: #b3a369;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
 
 .trophy {
@@ -27,4 +30,20 @@
 .trophy-number {
     margin-right: 10px;
     font-style: italic;
+}
+
+.username {
+    margin-left: 10px;
+    font-style: italic;
+}
+
+.greeting {
+    color: #003057;
+}
+
+.greeting-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
 }

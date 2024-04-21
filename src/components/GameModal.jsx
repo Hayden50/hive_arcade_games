@@ -19,7 +19,8 @@ const GameModal = ({ id, title, gameComponent }) => {
   return (
     <React.Fragment>
       <Button variant="outlined" onClick={handleClickOpen} size="large">
-        {title}
+        {/* This is really janky but will work for now */}
+        {title === "Click to Join a Game" ? title : `Create A ${title} Game`}
       </Button>
       <Dialog
         open={open}

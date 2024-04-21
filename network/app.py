@@ -19,7 +19,6 @@ def findNodes():
     #Code coming from the python receiver, puts other game nodes into list
     if request.method == 'POST':
         data = request.get_json()
-        print(data['Game'])
         gamesList.append(data['Game'])
         return{}
     #Checks other games that currently exist
@@ -35,7 +34,7 @@ def acceptGame():
         gamesList.remove(encodedData)
         #Now we need to tell all other servers to remove this data from their games list
         UDP_IP = "255.255.255.255"  # Broadcasting IP address
-        UDP_PORT = 5005
+        UDP_PORT = 5008
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         try:
@@ -58,13 +57,13 @@ def acceptGame():
 def broadcast():
     #Set up the UDP socket
     UDP_IP = "255.255.255.255"  # Broadcasting IP address
-    UDP_PORT = 5005
+    UDP_PORT = 5008
     #MESSAGE = "Hello, nodes!"
 
     # Create a UDP socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     # hostname = socket.gethostname()
-    # IP = socket.gethostbyname(hostname) 
+    # IP = socket.gethostbyname(hostname)
     # sock.bind((IP, 5005))
 
     # Enable broadcasting mode
@@ -77,7 +76,7 @@ def broadcast():
     userInfo = str(gameInfo['User'])
     peerInfo = gameInfo['PeerId']
     gameRequestMessage = gameType + ":" + userInfo + ":" + peerInfo
-    
+
     try:
         # Send the broadcast message
         sock.sendto(gameRequestMessage.encode(), ('<broadcast>', UDP_PORT))
@@ -114,8 +113,16 @@ def check_trophy():
     return jsonify(res)
 
 @app.route("/createUsername", methods=['POST'])
+
 def create_username():
-    username_file_path = "./network/username.txt"
+    # Create directory if it doesn't exist
+    directory = "./network"
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
+    # Path to username file
+    username_file_path = os.path.join(directory, "username.txt")
+
     data = request.get_json()
     with open(username_file_path, 'w') as file:
         file.write(data['username'])
@@ -155,4 +162,4 @@ def update_trophies():
     return jsonify(res)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(port=8000, debug=True)

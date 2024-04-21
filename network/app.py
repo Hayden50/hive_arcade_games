@@ -99,5 +99,31 @@ def delete_user():
     res = {'status': 200}
     return jsonify(res)
 
+# Pass in a JSON with shape {trophies: int} to update the current
+# user's trophy file
+@app.route("/updateTrophies", methods=['POST'])
+def update_trophies():
+    trophy_file_path = "./network/trophy.txt"
+    request_val = request.get_json()
+    request_val = int(request_val['trophies'])
+
+    if os.path.exists(trophy_file_path):
+        with open(trophy_file_path, 'r') as file:
+            old_trophy_val = int(file.read().strip())
+    else:
+        # Creates a new file with 0 trophies
+        with open(trophy_file_path, 'w') as file:
+            file.write('0')
+        old_trophy_val = 0
+
+    new_trophy_val = max(0, old_trophy_val + request_val)
+
+    with open(trophy_file_path, 'w') as file:
+        file.write(str(new_trophy_val))
+
+    print(old_trophy_val, new_trophy_val, request_val)
+    res = {'trophies': new_trophy_val}
+    return jsonify(res)
+
 if __name__ == "__main__":
     app.run(debug=True)

@@ -28,32 +28,61 @@ def findNodes():
 
 #This route is for handling a user accepting a game, and thus that game must be taken out of the gamesList
 @app.route("/acceptGame", methods=['POST'])
+def acceptGame():
+    if request.method == 'POST':
+        gameData = request.get_json()
+        encodedData = gameData['gameType']+":"+gameData['requestingUser']+":"+gameData['peerId']
+        gamesList.remove(encodedData)
+        #Now we need to tell all other servers to remove this data from their games list
+        UDP_IP = "255.255.255.255"  # Broadcasting IP address
+        UDP_PORT = 5005
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+        try:
+            # Send the broadcast message
+            sock.sendto(("Remove -"+encodedData).encode(), ('<broadcast>', UDP_PORT))
+            #sock.sendto(gameRequestMessage.encode(), (UDP_IP, UDP_PORT))
+            #sock.sendto(gameRequestMessage.encode(), ('128.61.6.121', 5005))
+            print(encodedData)
+
+        finally:
+        # Close the socket
+            sock.close()
+            return {'Data': encodedData}
+
 
 
 #This route is for when a user on the frontend creates a game
 #This game will be broadcast to all other nodes on the network currently
 @app.route("/broadcast", methods=['POST'])
 def broadcast():
-    # Set up the UDP socket
+    #Set up the UDP socket
     UDP_IP = "255.255.255.255"  # Broadcasting IP address
     UDP_PORT = 5005
     #MESSAGE = "Hello, nodes!"
 
     # Create a UDP socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    # hostname = socket.gethostname()
+    # IP = socket.gethostbyname(hostname) 
+    # sock.bind((IP, 5005))
 
     # Enable broadcasting mode
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 
+
+
     gameInfo = request.get_json()
     gameType = gameInfo['GameType']
     userInfo = str(gameInfo['User'])
-    gameRequestMessage = gameType + " game request by:" + userInfo
-
+    peerInfo = gameInfo['PeerId']
+    gameRequestMessage = gameType + ":" + userInfo + ":" + peerInfo
+    
     try:
         # Send the broadcast message
-        sock.sendto(gameRequestMessage.encode(), (UDP_IP, UDP_PORT))
-        sock.sendto(gameRequestMessage.encode(), (UDP_IP, 5006))
+        sock.sendto(gameRequestMessage.encode(), ('<broadcast>', UDP_PORT))
+        #sock.sendto(gameRequestMessage.encode(), (UDP_IP, UDP_PORT))
+        #sock.sendto(gameRequestMessage.encode(), ('128.61.6.121', 5005))
         print(gameRequestMessage)
 
     finally:

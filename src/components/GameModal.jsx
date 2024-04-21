@@ -10,11 +10,22 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const GameModal = ({ id, title, gameComponent }) => {
-  const [open, setOpen] = React.useState(false);
+const GameModal = ({ id, title, gameComponent, openStatus, setOpenStatus, duration }) => {
+  // const [open, setOpen] = React.useState(openStatus);
 
-  const handleClickOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleClickOpen = () => setOpenStatus(true);
+  const handleClose = () => setOpenStatus(false);
+
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      setOpenStatus(false)
+    }, duration)
+
+    return () => {
+      console.log('OUT OF TIME')
+      clearTimeout(timer)
+    }
+  }, [duration])
 
   return (
     <React.Fragment>
@@ -23,7 +34,7 @@ const GameModal = ({ id, title, gameComponent }) => {
         {title === "Click to Join a Game" ? title : `Create A ${title} Game`}
       </Button>
       <Dialog
-        open={open}
+        open={openStatus}
         onClose={handleClose}
         maxWidth="lg"
         fullWidth={true}

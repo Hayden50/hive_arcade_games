@@ -4,10 +4,10 @@ import Grid from './Grid';
 import Alert from './Alert';
 import { Button } from '@mui/material';
 
-export default function WordHunt( {} ) {
+export default function WordHunt( {score, setScore} ) {
     const [guess, setGuess] = useState("");
     const [matrix, setMatrix] = useState(Array.from({length: 4}, ()=> Array.from({length: 4}, ()=> String.fromCharCode(97 + Math.floor(Math.random() * 26)))));
-    const [score, setScore] = useState(0);
+    //const [score, setScore] = useState(0);
     const [wordExist, setWordExist] = useState('');
     const [pointsForWord, setPointsForWords] = useState(0);
     const [foundWords, setFoundWords] = useState({});

@@ -5,18 +5,29 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 
-const GameModal = ({ id, title, gameComponent }) => {
-  const [open, setOpen] = React.useState(false);
+const GameModal = ({ id, title, gameComponent, openStatus, setOpenStatus, duration }) => {
+  // const [open, setOpen] = React.useState(openStatus);
 
-  const handleClickOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleClickOpen = () => setOpenStatus(true);
+  const handleClose = () => setOpenStatus(false);
+
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      setOpenStatus(false)
+    }, duration)
+
+    return () => {
+      console.log('OUT OF TIME')
+      clearTimeout(timer)
+    }
+  }, [duration])
 
   return (
     <React.Fragment>
       <Button variant="outlined" onClick={handleClickOpen}>
         {title}
       </Button>
-      <Dialog open={open} onClose={handleClose} maxWidth="lg" fullWidth={true}>
+      <Dialog open={openStatus} onClose={handleClose} maxWidth="lg" fullWidth={true}>
         <DialogTitle id={id} justifyContent="center">
           {title}
         </DialogTitle>

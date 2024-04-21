@@ -26,10 +26,18 @@ const GamesList = ({ acceptGame }) => {
   return (
     <List>
       {existingGames.map(function (data) {
+        const splitData = data.split(":");
+        const buttonTitle =
+          splitData[0] +
+          " with " +
+          splitData[1] +
+          " (" +
+          (Math.random() + 1).toString(36).substring(3) +
+          ")";
         return (
           <ListItem disablePadding key={data}>
             <ListItemButton onClick={() => acceptGame(data)}>
-              <ListItemText primary={data} />
+              <ListItemText primary={buttonTitle} />
             </ListItemButton>
           </ListItem>
         );

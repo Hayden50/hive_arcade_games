@@ -2,20 +2,15 @@ import { useEffect, useRef, useState } from "react";
 import "./App.css";
 import GameModal from "./components/GameModal";
 import GamesList from "./components/GamesList";
-import TicTacToe from "./components/tic-tac-toe/TicTacToe";
 import { Button } from "@mui/material";
-import { IconButton } from "@mui/material";
-import ReplayIcon from "@mui/icons-material/Replay";
-import CreateGame from "./components/CreateGame";
 import Peer from "peerjs";
 import Banner from "./components/banner/Banner";
 
 function App() {
   const [peerId, setPeerId] = useState("");
   const [opponentId, setOpponentId] = useState("");
+  const [username, setUsername] = useState("");
   const [wordHuntOpen, setWordHuntOpen] = useState(false);
-  const [tictactoeOpen, setTictactoeOpen] = useState(false);
-  const [gameStartOpen, setGameStartOpen] = useState(false);
   const [gameJoinOpen, setGameJoinOpen] = useState(false);
   const [wordHuntScore, setWordHuntScore] = useState(0);
   const peerInstance = useRef(null);
@@ -31,7 +26,6 @@ function App() {
     peer.on("connection", (conn) => {
       console.log("Connection received from peer:", conn.peer);
       connInstance.current = conn;
-      //console.log('Connection', conn)
       conn.on("data", (data) => {
         console.log("Received", data);
         if (data.includes("WordHunt")) {
@@ -72,6 +66,20 @@ function App() {
       setWordHuntScore(0);
     }
   }, [wordHuntOpen]);
+
+  useEffect(() => {
+    const getUserData = async () => {
+      try {
+        const response = await fetch("http://localhost:8000/getUserData");
+        const data = await response.json();
+        setUsername(data.username);
+      } catch (error) {
+        console.error("There was a problem with the fetch operation:", error);
+      }
+    };
+
+    getUserData();
+  }, []); // Empty dependency array ensures the effect runs only on mount
 
   const broadcastGame = async () => {
     fetch("http://localhost:8000/broadcast")
@@ -118,7 +126,7 @@ function App() {
 
   const handleBroadcastGame = async (gameType) => {
     const gameRequest = {
-      User: Date.now(),
+      User: username,
       GameType: gameType,
       PeerId: peerId,
     };

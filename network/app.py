@@ -113,7 +113,6 @@ def check_trophy():
     return jsonify(res)
 
 @app.route("/createUsername", methods=['POST'])
-
 def create_username():
     # Create directory if it doesn't exist
     directory = "./network"

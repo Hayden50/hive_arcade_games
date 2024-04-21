@@ -3,6 +3,7 @@ import GameModal from "./components/GameModal";
 import TicTacToe from "./components/tic-tac-toe/TicTacToe";
 import WordHunt from "./components/WordHunt";
 import Banner from "./components/banner/Banner";
+import GamesList from "./components/GamesList";
 
 function App() {
   return (
@@ -26,6 +27,13 @@ function App() {
           id="WordHunt"
           title="Tic-Tac-Toe"
           gameComponent={<TicTacToe />}
+        />
+      </div>
+      <div className="modal-button">
+        <GameModal
+          id="WordHunt"
+          title="Click to Join a Game"
+          gameComponent={<GamesList />}
         />
       </div>
     </div>

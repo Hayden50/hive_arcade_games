@@ -116,7 +116,7 @@ def update_trophies():
             file.write('0')
         old_trophy_val = 0
 
-    new_trophy_val = max(0, old_trophy_val + request_val)
+    new_trophy_val = max(0, int(old_trophy_val) + int(request_val))
 
     with open(trophy_file_path, 'w') as file:
         file.write(str(new_trophy_val))

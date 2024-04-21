@@ -19,11 +19,13 @@ def findNodes():
     #Code coming from the python receiver, puts other game nodes into list
     if request.method == 'POST':
         data = request.get_json()
-        print(data['Game'])
+        print("GAME ", data['Game'])
         gamesList.append(data['Game'])
+        print("Games List 1: ", gamesList)
         return{}
     #Checks other games that currently exist
     if request.method == 'GET':
+        print("Games List 2: ", gamesList)
         return {'Data':gamesList}
 
 #This route is for handling a user accepting a game, and thus that game must be taken out of the gamesList
@@ -35,7 +37,7 @@ def acceptGame():
         gamesList.remove(encodedData)
         #Now we need to tell all other servers to remove this data from their games list
         UDP_IP = "255.255.255.255"  # Broadcasting IP address
-        UDP_PORT = 5005
+        UDP_PORT = 5008
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         try:
@@ -58,13 +60,13 @@ def acceptGame():
 def broadcast():
     #Set up the UDP socket
     UDP_IP = "255.255.255.255"  # Broadcasting IP address
-    UDP_PORT = 5005
+    UDP_PORT = 5008
     #MESSAGE = "Hello, nodes!"
 
     # Create a UDP socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     # hostname = socket.gethostname()
-    # IP = socket.gethostbyname(hostname) 
+    # IP = socket.gethostbyname(hostname)
     # sock.bind((IP, 5005))
 
     # Enable broadcasting mode
@@ -77,7 +79,7 @@ def broadcast():
     userInfo = str(gameInfo['User'])
     peerInfo = gameInfo['PeerId']
     gameRequestMessage = gameType + ":" + userInfo + ":" + peerInfo
-    
+
     try:
         # Send the broadcast message
         sock.sendto(gameRequestMessage.encode(), ('<broadcast>', UDP_PORT))
@@ -155,4 +157,4 @@ def update_trophies():
     return jsonify(res)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(port=8000, debug=True)

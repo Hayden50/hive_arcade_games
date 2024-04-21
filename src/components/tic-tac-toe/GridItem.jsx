@@ -81,7 +81,7 @@ const GridItem = ({
     const trophyData = {
       trophies: newVal,
     };
-    fetch("http://localhost:5000/updateTrophies", {
+    fetch("http://localhost:8000/updateTrophies", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

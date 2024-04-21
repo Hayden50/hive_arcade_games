@@ -35,7 +35,7 @@ const Banner = () => {
       username: textFieldValue,
     };
 
-    fetch("http://localhost:5000/createUsername", {
+    fetch("http://localhost:8000/createUsername", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -56,7 +56,7 @@ const Banner = () => {
   };
 
   const handleLogout = () => {
-    fetch("http://localhost:5000/deleteUser", {
+    fetch("http://localhost:8000/deleteUser", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -75,7 +75,7 @@ const Banner = () => {
   useEffect(() => {
     const getUserData = async () => {
       try {
-        const response = await fetch("http://localhost:5000/getUserData");
+        const response = await fetch("http://localhost:8000/getUserData");
         const data = await response.json();
         setUsername(data.username);
         setTrophies(data.trophies);

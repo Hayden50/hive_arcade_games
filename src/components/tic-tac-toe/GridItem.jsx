@@ -1,14 +1,19 @@
 import "./ticTacToe.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-const GridItem = (props) => {
+const GridItem = ({ id, amX }) => {
   const [clickable, setClickable] = useState(true);
   const [value, setValue] = useState(null);
 
   const handleClick = () => {
     if (clickable) {
       setClickable(false);
-      setValue("x");
+      if (amX) {
+        setValue("x");
+      } else {
+        setValue("o");
+      }
+      console.log(id);
     }
   };
 

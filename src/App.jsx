@@ -7,6 +7,8 @@ import { Button, IconButton, List, ListItem, ListItemButton, ListItemText } from
 import ReplayIcon from '@mui/icons-material/Replay';
 import CreateGame from "./components/CreateGame";
 import Peer from 'peerjs';
+import Banner from "./components/banner/Banner";
+import GamesList from "./components/GamesList";
 
 function App() {
 
@@ -119,36 +121,46 @@ function App() {
   }
 
   return (
-    <>
-      <div>
-        <p>This will be the landing page for the application!</p>
+    <div className="container">
+      <Banner />
+      <div className="title-container">
+        <h1 className="title">Hive Arcade</h1>
+        <p className="description">
+          A decentralized game suite for Georgia Tech students
+        </p>
       </div>
       <IconButton variant="outlined" onClick={findGames}>
         <ReplayIcon></ReplayIcon>
       </IconButton>
-      <GameModal
-        id="WordHunt "
-        key={wordHuntOpen}
-        title="Word Hunt"
-        duration={30000}
-        gameComponent={<WordHunt score={wordHuntScore} setScore={setWordHuntScore} />}
-        openStatus={wordHuntOpen}
-        setOpenStatus={setWordHuntOpen}
-      />
-      <GameModal
-        id="WordHunt"
-        title="Tic-Tac-Toe"
-        gameComponent={<TicTacToe />}
-        setOpenStatus={setTictactoeOpen}
-        openStatus={tictactoeOpen}
-      />
-      <GameModal
-        id="CreateGame"
-        title="Create Game"
-        setOpenStatus={setGameStartOpen}
-        gameComponent={<CreateGame peerId={peerId}/>}
-        openStatus={gameStartOpen}
-      />
+      <div className="modal-button">
+        <GameModal
+          id="WordHunt "
+          key={wordHuntOpen}
+          title="Word Hunt"
+          duration={30000}
+          gameComponent={<WordHunt score={wordHuntScore} setScore={setWordHuntScore} />}
+          openStatus={wordHuntOpen}
+          setOpenStatus={setWordHuntOpen}
+        />
+      </div>
+      <div className="modal-button">
+        <GameModal
+          id="WordHunt"
+          title="Tic-Tac-Toe"
+          gameComponent={<TicTacToe />}
+          setOpenStatus={setTictactoeOpen}
+          openStatus={tictactoeOpen}
+        />
+      </div>
+      <div className="modal-button">
+        <GameModal
+          id="CreateGame"
+          title="Create Game"
+          setOpenStatus={setGameStartOpen}
+          gameComponent={<CreateGame peerId={peerId}/>}
+          openStatus={gameStartOpen}
+        />
+      </div>
       <List>
         {existingGames.map(function(data) {
           return (
@@ -160,7 +172,7 @@ function App() {
           )
         })}
       </List>
-    </>
+    </div>
   );
 }
 

@@ -4,6 +4,11 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
+import Slide from "@mui/material/Slide";
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 const GameModal = ({ id, title, gameComponent, openStatus, setOpenStatus, duration }) => {
   // const [open, setOpen] = React.useState(openStatus);
@@ -24,10 +29,17 @@ const GameModal = ({ id, title, gameComponent, openStatus, setOpenStatus, durati
 
   return (
     <React.Fragment>
-      <Button variant="outlined" onClick={handleClickOpen}>
-        {title}
+      <Button variant="outlined" onClick={handleClickOpen} size="large">
+        {/* This is really janky but will work for now */}
+        {title === "Click to Join a Game" ? title : `Create A ${title} Game`}
       </Button>
-      <Dialog open={openStatus} onClose={handleClose} maxWidth="lg" fullWidth={true}>
+      <Dialog
+        open={openStatus}
+        onClose={handleClose}
+        maxWidth="lg"
+        fullWidth={true}
+        TransitionComponent={Transition}
+      >
         <DialogTitle id={id} justifyContent="center">
           {title}
         </DialogTitle>

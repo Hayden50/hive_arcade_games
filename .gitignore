@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# User specific files
+*/trophy.txt
+*/username.txt

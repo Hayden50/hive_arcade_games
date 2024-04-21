@@ -1,14 +1,18 @@
 import "./gamesList.css";
 import Button from "@mui/material/Button";
 
-const GamesList = () => {
+const GamesList = ({ gameList }) => {
+  if (gameList.length === 0 || gamesList === null) {
+    return <h2>No games are available</h2>;
+  }
+
   return (
     <div className="list-container">
-      <Button>fdasfsd</Button>
-      <Button>fdasfsd</Button>
-      <Button>fdasfsd</Button>
-      <Button>fdasfsd</Button>
-      <Button>fdasfsd</Button>
+      <div className="list-container">
+        {gameList.map((game, index) => (
+          <Button key={index}>{game}</Button>
+        ))}
+      </div>
     </div>
   );
 };

@@ -33,7 +33,7 @@ function App() {
         <GameModal
           id="WordHunt"
           title="Click to Join a Game"
-          gameComponent={<GamesList />}
+          gameComponent={<GamesList gameList={[]} />}
         />
       </div>
     </div>

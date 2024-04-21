@@ -19,13 +19,10 @@ def findNodes():
     #Code coming from the python receiver, puts other game nodes into list
     if request.method == 'POST':
         data = request.get_json()
-        print("GAME ", data['Game'])
         gamesList.append(data['Game'])
-        print("Games List 1: ", gamesList)
         return{}
     #Checks other games that currently exist
     if request.method == 'GET':
-        print("Games List 2: ", gamesList)
         return {'Data':gamesList}
 
 #This route is for handling a user accepting a game, and thus that game must be taken out of the gamesList

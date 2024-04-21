@@ -113,8 +113,16 @@ def check_trophy():
     return jsonify(res)
 
 @app.route("/createUsername", methods=['POST'])
+
 def create_username():
-    username_file_path = "./network/username.txt"
+    # Create directory if it doesn't exist
+    directory = "./network"
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
+    # Path to username file
+    username_file_path = os.path.join(directory, "username.txt")
+
     data = request.get_json()
     with open(username_file_path, 'w') as file:
         file.write(data['username'])

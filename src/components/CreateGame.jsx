@@ -3,11 +3,12 @@ import React from 'react'
 import { useEffect, useState } from 'react'
 
 
-export default function CreateGame( {} ) {
+export default function CreateGame( {peerId} ) {
     const handleBroadcastGame = async (gameType) => {
         const gameRequest = {
             'User': Date.now(),
-            'GameType': gameType
+            'GameType': gameType,
+            'PeerId': peerId
         }
         fetch("http://localhost:5000/broadcast", {
             method: "POST", 

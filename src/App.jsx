@@ -213,7 +213,7 @@ function App() {
         id="WordHunt "
         key={wordHuntOpen}
         title="Word Hunt"
-        duration={30000}
+        duration={3000000}
         gameComponent={
           <WordHunt
             score={wordHuntScore}

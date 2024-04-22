@@ -3,7 +3,12 @@ import GridItem from "./GridItem";
 import "./ticTacToe.css";
 import { useEffect, useState } from "react";
 
-const TicTacToe = ({ connInstance, peerId }) => {
+const TicTacToe = ({
+  connInstance,
+  peerId,
+  updateTrophies,
+  setUpdateTrophies,
+}) => {
   const initArr = Array.from({ length: 3 }, () => Array(3).fill(0));
   const [board, setBoard] = useState(initArr);
   const [myTurn, updateMyTurn] = useState(false);
@@ -83,6 +88,8 @@ const TicTacToe = ({ connInstance, peerId }) => {
               updateMyTurn={updateMyTurn}
               setMessage={setMessage}
               connInstance={connInstance}
+              setUpdateTrophies={setUpdateTrophies}
+              updateTrophies={updateTrophies}
             ></GridItem>
           </Grid>
         ))}

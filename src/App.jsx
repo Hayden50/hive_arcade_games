@@ -15,6 +15,7 @@ function App() {
   const [tictactoeOpen, setTictactoeOpen] = useState(false);
   const [gameJoinOpen, setGameJoinOpen] = useState(false);
   const [wordHuntScore, setWordHuntScore] = useState(0);
+  const [updateTrophies, setUpdateTrophies] = useState(false);
   const peerInstance = useRef(null);
   const connInstance = useRef(null);
 
@@ -165,7 +166,7 @@ function App() {
 
   return (
     <div className="container">
-      <Banner />
+      <Banner updateTrophies={updateTrophies} />
       <div className="title-container">
         <h1 className="title">Hive Arcade</h1>
         <p className="description">
@@ -204,7 +205,12 @@ function App() {
         id="WordHunt"
         title="Tic-Tac-Toe"
         gameComponent={
-          <TicTacToe connInstance={connInstance} peerId={peerId} />
+          <TicTacToe
+            connInstance={connInstance}
+            peerId={peerId}
+            setUpdateTrophies={setUpdateTrophies}
+            updateTrophies={updateTrophies}
+          />
         }
         setOpenStatus={setTictactoeOpen}
         openStatus={tictactoeOpen}
@@ -221,6 +227,8 @@ function App() {
             setScore={setWordHuntScore}
             connInstance={connInstance}
             peerId={peerId}
+            setUpdateTrophies={setUpdateTrophies}
+            updateTrophies={updateTrophies}
           />
         }
         openStatus={wordHuntOpen}

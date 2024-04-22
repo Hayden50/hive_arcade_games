@@ -8,7 +8,14 @@ import Modal from "@mui/material/Modal";
 import { Login } from "@mui/icons-material";
 import { useRef } from "react";
 
-export default function WordHunt({ score, setScore, connInstance, peerId }) {
+export default function WordHunt({
+  score,
+  setScore,
+  connInstance,
+  peerId,
+  setUpdateTrophies,
+  updateTrophies,
+}) {
   const words = checkWord("en");
   const [guess, setGuess] = useState("");
   const [resultsOpen, setResultsOpen] = useState(false);
@@ -153,6 +160,7 @@ export default function WordHunt({ score, setScore, connInstance, peerId }) {
         .then((data) => {
           console.log(data.Data);
         });
+      setUpdateTrophies(!updateTrophies);
     },
     [],
   );

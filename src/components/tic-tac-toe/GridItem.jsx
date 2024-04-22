@@ -10,6 +10,8 @@ const GridItem = ({
   updateMyTurn,
   setMessage,
   connInstance,
+  setUpdateTrophies,
+  updateTrophies,
 }) => {
   const [clickable, setClickable] = useState(true);
   const [value, setValue] = useState(null);
@@ -104,7 +106,7 @@ const GridItem = ({
   };
 
   // Calls Flask API to update the trophy count associated with the account
-  const updateTrophies = (newVal) => {
+  const updateTrophyVals = (newVal) => {
     const trophyData = {
       trophies: newVal,
     };
@@ -125,11 +127,9 @@ const GridItem = ({
     switch (gameState) {
       case -1:
         if (amX) {
-          updateTrophies(-10);
           setMessage("You lose!! :(");
           setClickable(false);
         } else {
-          updateTrophies(10);
           setMessage("You Win!! :)");
           setClickable(false);
         }
@@ -138,11 +138,9 @@ const GridItem = ({
         break;
       case 1:
         if (amX) {
-          updateTrophies(10);
           setMessage("You Win!! :)");
           setClickable(false);
         } else {
-          updateTrophies(-10);
           setMessage("You lose!! :(");
           setClickable(false);
         }

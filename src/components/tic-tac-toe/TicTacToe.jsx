@@ -78,26 +78,25 @@ const TicTacToe = ({
     return result;
   };
 
-  useEffect(
-    () => () => {
-      // Calls Flask API to update the trophy count associated with the account
-      if (wonRef.current !== null) {
-        const trophyData = {
-          trophies: wonRef.current ? 10 : -10,
-        };
-        fetch("http://localhost:8000/updateTrophies", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(trophyData),
-        })
-          .then((res) => res.json())
-          .then((data) => console.log(data));
-      }
-    },
-    [],
-  );
+  useEffect(() => () => {
+    // Calls Flask API to update the trophy count associated with the account
+    if (wonRef.current !== null) {
+      const trophyData = {
+        trophies: wonRef.current ? 10 : -10,
+      };
+      fetch("http://localhost:8000/updateTrophies", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(trophyData),
+      })
+        .then((res) => res.json())
+        .then((data) => console.log(data));
+    }
+    setUpdateTrophies(!updateTrophies);
+    wonRef.current = null;
+  });
 
   return (
     <div>

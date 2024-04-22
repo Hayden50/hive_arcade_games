@@ -10,8 +10,7 @@ const GridItem = ({
   updateMyTurn,
   setMessage,
   connInstance,
-  setUpdateTrophies,
-  updateTrophies,
+  setWon,
 }) => {
   const [clickable, setClickable] = useState(true);
   const [value, setValue] = useState(null);
@@ -105,22 +104,6 @@ const GridItem = ({
     return 0;
   };
 
-  // Calls Flask API to update the trophy count associated with the account
-  const updateTrophyVals = (newVal) => {
-    const trophyData = {
-      trophies: newVal,
-    };
-    fetch("http://localhost:8000/updateTrophies", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(trophyData),
-    })
-      .then((res) => res.json())
-      .then((data) => console.log(data));
-  };
-
   const useTurn = () => {
     // Check to see if the game is now over
     let gameState = checkGameState();
@@ -128,9 +111,11 @@ const GridItem = ({
       case -1:
         if (amX) {
           setMessage("You lose!! :(");
+          setWon(false);
           setClickable(false);
         } else {
           setMessage("You Win!! :)");
+          setWon(true);
           setClickable(false);
         }
         break;
@@ -139,10 +124,12 @@ const GridItem = ({
       case 1:
         if (amX) {
           setMessage("You Win!! :)");
+          setWon(true);
           setClickable(false);
         } else {
           setMessage("You lose!! :(");
           setClickable(false);
+          setWon(false);
         }
         break;
       case 2:

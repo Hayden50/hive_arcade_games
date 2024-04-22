@@ -2,6 +2,7 @@ import Grid from "@mui/material/Unstable_Grid2";
 import GridItem from "./GridItem";
 import "./ticTacToe.css";
 import { useEffect, useState } from "react";
+import { useRef } from "react";
 
 const TicTacToe = ({
   connInstance,
@@ -14,6 +15,8 @@ const TicTacToe = ({
   const [myTurn, updateMyTurn] = useState(false);
   const [amX, setAmX] = useState(false);
   const [message, setMessage] = useState("");
+  const [won, setWon] = useState(null);
+  const wonRef = useRef(won);
 
   const [localPeerId, setLocalPeerId] = useState("");
   const [connPeerId, setConnPeerId] = useState("");
@@ -23,6 +26,11 @@ const TicTacToe = ({
     connInstance.current.send("ID:" + peerId);
     setLocalPeerId(peerId);
   }, []);
+
+  useEffect(() => {
+    // Update score ref when score changes
+    wonRef.current = won;
+  }, [won]);
 
   useEffect(() => {
     designateLetter();
@@ -70,6 +78,27 @@ const TicTacToe = ({
     return result;
   };
 
+  useEffect(
+    () => () => {
+      // Calls Flask API to update the trophy count associated with the account
+      if (wonRef.current !== null) {
+        const trophyData = {
+          trophies: wonRef.current ? 10 : -10,
+        };
+        fetch("http://localhost:8000/updateTrophies", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(trophyData),
+        })
+          .then((res) => res.json())
+          .then((data) => console.log(data));
+      }
+    },
+    [],
+  );
+
   return (
     <div>
       <div className="word-box">
@@ -88,8 +117,7 @@ const TicTacToe = ({
               updateMyTurn={updateMyTurn}
               setMessage={setMessage}
               connInstance={connInstance}
-              setUpdateTrophies={setUpdateTrophies}
-              updateTrophies={updateTrophies}
+              setWon={setWon}
             ></GridItem>
           </Grid>
         ))}

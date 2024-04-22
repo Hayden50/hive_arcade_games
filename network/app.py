@@ -49,7 +49,15 @@ def acceptGame():
             sock.close()
             return {'Data': encodedData}
 
-
+@app.route("/removeNode", methods=['POST'])
+def removeGame():
+    gameData = request.get_json()
+    if(gameData['Game'] in gamesList):
+        gamesList.remove(gameData['Game'])
+        print(gamesList)
+        return {}
+    
+    return {}
 
 #This route is for when a user on the frontend creates a game
 #This game will be broadcast to all other nodes on the network currently

@@ -28,7 +28,7 @@ try:
         message = data.decode()
         print("Received message:", message)
         if(message.find("Remove -") != -1):
-            messageArray = message.split('-')
+            messageArray = message.split('Remove -')
             print(messageArray)
             payload = {'Game': messageArray[1]}
             #Need to remove this node from other flask servers that peers are running, still needs to be implemented

@@ -7,7 +7,7 @@ import TextField from "@mui/material/TextField";
 import Modal from "@mui/material/Modal";
 import Button from "@mui/material/Button";
 
-const Banner = () => {
+const Banner = ({ bannerNum }) => {
   const [username, setUsername] = useState("");
   const [trophies, setTrophies] = useState(0);
   const [textFieldValue, setTextFieldValue] = useState("");

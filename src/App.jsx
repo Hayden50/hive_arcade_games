@@ -117,7 +117,7 @@ function App() {
       })
         .then((res) => res.json())
         .then((data) => {
-          console.log(data.Data);
+          console.log(data.trophies);
         });
 
       // Form the connection with the remote peer

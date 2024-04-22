@@ -5,6 +5,8 @@ import { Button } from "@mui/material";
 import checkWord from "check-if-word";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
+import { Login } from "@mui/icons-material";
+import { useRef } from "react";
 
 export default function WordHunt({ score, setScore, connInstance, peerId }) {
   const words = checkWord("en");
@@ -22,6 +24,14 @@ export default function WordHunt({ score, setScore, connInstance, peerId }) {
   const [pointsForWord, setPointsForWords] = useState(0);
   const [foundWords, setFoundWords] = useState({});
   const [timerExpired, setTimerExpired] = useState(false);
+
+  const scoreRef = useRef(score);
+  const opponentScoreRef = useRef(0); // Initialize opponent score ref with 0
+
+  useEffect(() => {
+    // Update score ref when score changes
+    scoreRef.current = score;
+  }, [score]);
 
   const handleSubmit = (currWord) => {
     //Reset matrix back to all lower case (which is used to show which is selected in Grid.js)
@@ -75,6 +85,8 @@ export default function WordHunt({ score, setScore, connInstance, peerId }) {
 
       if (commandType === "RES") {
         const oppVal = parseInt(dataArr[1]);
+        // Update opponent score ref when receiving opponent score
+        opponentScoreRef.current = oppVal;
         setOpponentVal(oppVal);
       }
     });
@@ -111,6 +123,40 @@ export default function WordHunt({ score, setScore, connInstance, peerId }) {
     }
   };
 
+  useEffect(
+    () => () => {
+      console.log(
+        "Score: " + scoreRef.current,
+        " OPP: " + opponentScoreRef.current,
+      );
+      let updateTrophyReq;
+      if (scoreRef.current > opponentScoreRef.current) {
+        console.log("ADDING");
+        updateTrophyReq = {
+          trophies: 10,
+        };
+      }
+      if (scoreRef.current < opponentScoreRef.current) {
+        console.log("REMOVING");
+        updateTrophyReq = {
+          trophies: -10,
+        };
+      }
+      fetch("http://localhost:8000/updateTrophies", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updateTrophyReq),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data.Data);
+        });
+    },
+    [],
+  );
+
   return (
     <>
       {resultsOpen && (
@@ -142,17 +188,3 @@ export default function WordHunt({ score, setScore, connInstance, peerId }) {
     </>
   );
 }
-
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  height: 600,
-  bgcolor: "background.paper",
-  boxShadow: 24,
-  p: 4,
-  display: "flex",
-  flexDirection: "column",
-};

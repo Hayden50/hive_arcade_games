@@ -1,8 +1,7 @@
 import Grid from "@mui/material/Unstable_Grid2";
 import GridItem from "./GridItem";
 import "./ticTacToe.css";
-import { useEffect, useState } from "react";
-import { useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 
 const TicTacToe = ({
   connInstance,

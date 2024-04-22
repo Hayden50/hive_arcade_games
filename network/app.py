@@ -138,6 +138,10 @@ def create_username():
 
 @app.route("/deleteUser", methods=['POST'])
 def delete_user():
+    trophy_file_path = "./network/trophy.txt"
+    with open(trophy_file_path, 'w') as file:
+        file.write('0')
+
     os.remove("./network/username.txt")
     res = {'status': 200}
     return jsonify(res)

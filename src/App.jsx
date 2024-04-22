@@ -10,12 +10,12 @@ import TicTacToe from "./components/tic-tac-toe/TicTacToe";
 
 function App() {
   const [peerId, setPeerId] = useState("");
-  const [opponentId, setOpponentId] = useState("");
   const [username, setUsername] = useState("");
   const [wordHuntOpen, setWordHuntOpen] = useState(false);
   const [tictactoeOpen, setTictactoeOpen] = useState(false);
   const [gameJoinOpen, setGameJoinOpen] = useState(false);
   const [wordHuntScore, setWordHuntScore] = useState(0);
+  const [updateTrophies, setUpdateTrophies] = useState(false);
   const peerInstance = useRef(null);
   const connInstance = useRef(null);
 
@@ -118,7 +118,7 @@ function App() {
       })
         .then((res) => res.json())
         .then((data) => {
-          console.log(data.Data);
+          console.log(data.trophies);
         });
 
       // Form the connection with the remote peer
@@ -136,14 +136,29 @@ function App() {
         // SENDER SIDE:
         if (dataList[0] == "WordHunt") {
           setWordHuntOpen(true);
+          setGameJoinOpen(false);
         } else if (dataList[0] === "TicTacToe") {
           setTictactoeOpen(true);
+          setGameJoinOpen(false);
         }
       });
     }
   };
 
   const handleBroadcastGame = async (gameType) => {
+    let data;
+    const getUserData = async () => {
+      try {
+        const response = await fetch("http://localhost:8000/getUserData");
+        data = await response.json();
+      } catch (error) {
+        console.error("There was a problem with the fetch operation:", error);
+      }
+    };
+
+    await getUserData();
+    if (!data || data.username == "") return;
+
     const gameRequest = {
       User: username,
       GameType: gameType,
@@ -164,7 +179,7 @@ function App() {
 
   return (
     <div className="container">
-      <Banner />
+      <Banner updateTrophies={updateTrophies} />
       <div className="title-container">
         <h1 className="title">Hive Arcade</h1>
         <p className="description">
@@ -203,7 +218,12 @@ function App() {
         id="WordHunt"
         title="Tic-Tac-Toe"
         gameComponent={
-          <TicTacToe connInstance={connInstance} peerId={peerId} />
+          <TicTacToe
+            connInstance={connInstance}
+            peerId={peerId}
+            setUpdateTrophies={setUpdateTrophies}
+            updateTrophies={updateTrophies}
+          />
         }
         setOpenStatus={setTictactoeOpen}
         openStatus={tictactoeOpen}
@@ -213,9 +233,16 @@ function App() {
         id="WordHunt "
         key={wordHuntOpen}
         title="Word Hunt"
-        duration={30000}
+        duration={3000000}
         gameComponent={
-          <WordHunt score={wordHuntScore} setScore={setWordHuntScore} />
+          <WordHunt
+            score={wordHuntScore}
+            setScore={setWordHuntScore}
+            connInstance={connInstance}
+            peerId={peerId}
+            setUpdateTrophies={setUpdateTrophies}
+            updateTrophies={updateTrophies}
+          />
         }
         openStatus={wordHuntOpen}
         setOpenStatus={setWordHuntOpen}

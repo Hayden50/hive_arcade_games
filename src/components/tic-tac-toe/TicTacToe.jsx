@@ -1,14 +1,21 @@
 import Grid from "@mui/material/Unstable_Grid2";
 import GridItem from "./GridItem";
 import "./ticTacToe.css";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
-const TicTacToe = ({ connInstance, peerId }) => {
+const TicTacToe = ({
+  connInstance,
+  peerId,
+  updateTrophies,
+  setUpdateTrophies,
+}) => {
   const initArr = Array.from({ length: 3 }, () => Array(3).fill(0));
   const [board, setBoard] = useState(initArr);
   const [myTurn, updateMyTurn] = useState(false);
   const [amX, setAmX] = useState(false);
   const [message, setMessage] = useState("");
+  const [won, setWon] = useState(null);
+  const wonRef = useRef(won);
 
   const [localPeerId, setLocalPeerId] = useState("");
   const [connPeerId, setConnPeerId] = useState("");
@@ -18,6 +25,11 @@ const TicTacToe = ({ connInstance, peerId }) => {
     connInstance.current.send("ID:" + peerId);
     setLocalPeerId(peerId);
   }, []);
+
+  useEffect(() => {
+    // Update score ref when score changes
+    wonRef.current = won;
+  }, [won]);
 
   useEffect(() => {
     designateLetter();
@@ -65,6 +77,26 @@ const TicTacToe = ({ connInstance, peerId }) => {
     return result;
   };
 
+  useEffect(() => () => {
+    // Calls Flask API to update the trophy count associated with the account
+    if (wonRef.current !== null) {
+      const trophyData = {
+        trophies: wonRef.current ? 10 : -10,
+      };
+      fetch("http://localhost:8000/updateTrophies", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(trophyData),
+      })
+        .then((res) => res.json())
+        .then((data) => console.log(data));
+    }
+    setUpdateTrophies(!updateTrophies);
+    wonRef.current = null;
+  });
+
   return (
     <div>
       <div className="word-box">
@@ -83,6 +115,7 @@ const TicTacToe = ({ connInstance, peerId }) => {
               updateMyTurn={updateMyTurn}
               setMessage={setMessage}
               connInstance={connInstance}
+              setWon={setWon}
             ></GridItem>
           </Grid>
         ))}

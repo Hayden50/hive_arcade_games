@@ -1,68 +1,184 @@
-import React from 'react'
-import { useEffect, useState } from 'react'
-import Grid from './Grid';
-import Alert from './Alert';
-import { Button } from '@mui/material';
+import { useEffect, useState } from "react";
+import Grid from "./Grid";
+import Alert from "./Alert";
+import { Button } from "@mui/material";
+import checkWord from "check-if-word";
+import { useRef } from "react";
 
-export default function WordHunt( {score, setScore} ) {
-    const [guess, setGuess] = useState("");
-    const [matrix, setMatrix] = useState(Array.from({length: 4}, ()=> Array.from({length: 4}, ()=> String.fromCharCode(97 + Math.floor(Math.random() * 26)))));
-    //const [score, setScore] = useState(0);
-    const [wordExist, setWordExist] = useState('');
-    const [pointsForWord, setPointsForWords] = useState(0);
-    const [foundWords, setFoundWords] = useState({});
+export default function WordHunt({
+  score,
+  setScore,
+  connInstance,
+  peerId,
+  setUpdateTrophies,
+  updateTrophies,
+}) {
+  const words = checkWord("en");
+  const [guess, setGuess] = useState("");
+  const [resultsOpen, setResultsOpen] = useState(false);
+  const [opponentVal, setOpponentVal] = useState(0);
+  const [matrix, setMatrix] = useState(
+    Array.from({ length: 4 }, () =>
+      Array.from({ length: 4 }, () =>
+        String.fromCharCode(97 + Math.floor(Math.random() * 26)),
+      ),
+    ),
+  );
+  const [wordExist, setWordExist] = useState("");
+  const [pointsForWord, setPointsForWords] = useState(0);
+  const [foundWords, setFoundWords] = useState({});
+  const [timerExpired, setTimerExpired] = useState(false);
 
-    const handleSubmit = (currWord) => {
-        //Reset matrix back to all lower case (which is used to show which is selected in Grid.js)
-        const updatedMatrix = matrix.map((x, currRowIndex) => {
-            return x.map((y, currColIndex) => {
-                return y.toLowerCase();
-            })
-        })
-        setMatrix(updatedMatrix);
+  const scoreRef = useRef(score);
+  const opponentScoreRef = useRef(0); // Initialize opponent score ref with 0
 
-        //If word is too short don't allow it
-        if(currWord.length < 3) {
-            setWordExist('tooShort');
-            setGuess('');
-            setPointsForWords(0);
-            return
-        
-        //If word has already been found don't allow it
-        } else if(foundWords[currWord]) {
-            setWordExist('found');
-            setGuess('');
-            setPointsForWords(0);
-            return
-        }
-        fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${currWord}`)
-        .then(function(response) {
-        //If word exists in dictionary api, add score n stuff
-        if(response.ok) {
-            setWordExist('success');
-            setPointsForWords(((currWord.length-2)**2) * 100)
-            setScore(score + ((currWord.length-2)**2) * 100);
-            setFoundWords(words => ({
-                ...words,
-                [currWord]: true,
-            }))
-        //Otherwise make it a failure
-        } else {
-            setWordExist('failure');
-            setPointsForWords(0);
-        }
-        })
-        setGuess('');
+  useEffect(() => {
+    // Update score ref when score changes
+    scoreRef.current = score;
+  }, [score]);
+
+  const handleSubmit = (currWord) => {
+    //Reset matrix back to all lower case (which is used to show which is selected in Grid.js)
+    const updatedMatrix = matrix.map((x, currRowIndex) => {
+      return x.map((y, currColIndex) => {
+        return y.toLowerCase();
+      });
+    });
+    setMatrix(updatedMatrix);
+
+    //If word is too short don't allow it
+    if (currWord.length < 3) {
+      setWordExist("tooShort");
+      setGuess("");
+      setPointsForWords(0);
+      return;
+
+      //If word has already been found don't allow it
+    } else if (foundWords[currWord]) {
+      setWordExist("found");
+      setGuess("");
+      setPointsForWords(0);
+      return;
     }
 
+    //If word exists in dictionary api, add score n stuff
+    if (words.check(currWord)) {
+      setWordExist("success");
+      setPointsForWords((currWord.length - 2) ** 2 * 100);
+      setScore(score + (currWord.length - 2) ** 2 * 100);
+      setFoundWords((words) => ({
+        ...words,
+        [currWord]: true,
+      }));
+      //Otherwise make it a failure
+    } else {
+      setWordExist("failure");
+      setPointsForWords(0);
+    }
+    setGuess("");
+  };
 
-    return (
+  useEffect(() => {
+    connInstance.current.send("ID:" + peerId);
+  }, []);
+
+  useEffect(() => {
+    connInstance.current.on("data", (data) => {
+      const dataArr = data.split(":");
+      const commandType = dataArr[0];
+
+      if (commandType === "RES") {
+        const oppVal = parseInt(dataArr[1]);
+        // Update opponent score ref when receiving opponent score
+        opponentScoreRef.current = oppVal;
+        setOpponentVal(oppVal);
+      }
+    });
+  }),
+    [];
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setTimerExpired(true);
+    }, 29500); // Assuming 30000 milliseconds (30 seconds) is your timer duration
+    // Clear the timer if the component unmounts or when the modal is closed
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (timerExpired) {
+      connInstance.current.send("RES:" + score);
+      setResultsOpen(true);
+    }
+  }, [timerExpired]);
+
+  const getResultTag = (currScore, oppScore) => {
+    if (currScore == oppScore) {
+      return "It's a Tie!";
+    } else if (currScore < oppScore) {
+      return "You Lose!";
+    } else {
+      return "You Win!";
+    }
+  };
+
+  useEffect(
+    () => () => {
+      let updateTrophyReq;
+      if (scoreRef.current > opponentScoreRef.current) {
+        updateTrophyReq = {
+          trophies: 10,
+        };
+      }
+      if (scoreRef.current < opponentScoreRef.current) {
+        updateTrophyReq = {
+          trophies: -10,
+        };
+      }
+      fetch("http://localhost:8000/updateTrophies", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updateTrophyReq),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data.Data);
+        });
+      setUpdateTrophies(!updateTrophies);
+    },
+    [],
+  );
+
+  return (
+    <>
+      {resultsOpen && (
+        <div>
+          <h1>{getResultTag(score, opponentVal)}</h1>
+          <div>Your Score: {score}</div>
+          <div>Opponent Score: {opponentVal}</div>
+        </div>
+      )}
+
+      {!resultsOpen && (
         <>
-        <h1 className="score">Score: {score}</h1>
-        <Grid board={matrix} setBoard={setMatrix} guess={guess} setGuess={setGuess}></Grid>
-        <h1 className="currentGuess">{guess}</h1>
-        <Button onClick={()=>handleSubmit(guess)}>Submit</Button>
-        <Alert success={wordExist} points={pointsForWord} setSuccess={setWordExist} />
+          <h1 className="score">Score: {score}</h1>
+          <Grid
+            board={matrix}
+            setBoard={setMatrix}
+            guess={guess}
+            setGuess={setGuess}
+          ></Grid>
+          <h1 className="currentGuess">{guess}</h1>
+          <Button onClick={() => handleSubmit(guess)}>Submit</Button>
+          <Alert
+            success={wordExist}
+            points={pointsForWord}
+            setSuccess={setWordExist}
+          />
         </>
-    )
+      )}
+    </>
+  );
 }

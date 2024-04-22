@@ -5,12 +5,15 @@ import GamesList from "./components/GamesList";
 import { Button } from "@mui/material";
 import Peer from "peerjs";
 import Banner from "./components/banner/Banner";
+import WordHunt from "./components/WordHunt";
+import TicTacToe from "./components/tic-tac-toe/TicTacToe";
 
 function App() {
   const [peerId, setPeerId] = useState("");
   const [opponentId, setOpponentId] = useState("");
   const [username, setUsername] = useState("");
   const [wordHuntOpen, setWordHuntOpen] = useState(false);
+  const [tictactoeOpen, setTictactoeOpen] = useState(false);
   const [gameJoinOpen, setGameJoinOpen] = useState(false);
   const [wordHuntScore, setWordHuntScore] = useState(0);
   const peerInstance = useRef(null);
@@ -179,6 +182,26 @@ function App() {
           openStatus={gameJoinOpen}
         />
       </div>
+
+      <GameModal
+        id="WordHunt"
+        title="Tic-Tac-Toe"
+        gameComponent={<TicTacToe />}
+        setOpenStatus={setTictactoeOpen}
+        openStatus={tictactoeOpen}
+      />
+
+      <GameModal
+        id="WordHunt "
+        key={wordHuntOpen}
+        title="Word Hunt"
+        duration={30000}
+        gameComponent={
+          <WordHunt score={wordHuntScore} setScore={setWordHuntScore} />
+        }
+        openStatus={wordHuntOpen}
+        setOpenStatus={setWordHuntOpen}
+      />
     </div>
   );
 }

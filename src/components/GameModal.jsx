@@ -10,7 +10,14 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const GameModal = ({ id, title, gameComponent, openStatus, setOpenStatus, duration }) => {
+const GameModal = ({
+  id,
+  title,
+  gameComponent,
+  openStatus,
+  setOpenStatus,
+  duration,
+}) => {
   // const [open, setOpen] = React.useState(openStatus);
 
   const handleClickOpen = () => setOpenStatus(true);
@@ -18,21 +25,22 @@ const GameModal = ({ id, title, gameComponent, openStatus, setOpenStatus, durati
 
   React.useEffect(() => {
     const timer = setTimeout(() => {
-      setOpenStatus(false)
-    }, duration)
+      setOpenStatus(false);
+    }, duration);
 
     return () => {
-      console.log('OUT OF TIME')
-      clearTimeout(timer)
-    }
-  }, [duration])
+      console.log("OUT OF TIME");
+      clearTimeout(timer);
+    };
+  }, [duration]);
 
   return (
     <React.Fragment>
-      <Button variant="outlined" onClick={handleClickOpen} size="large">
-        {/* This is really janky but will work for now */}
-        {title === "Click to Join a Game" ? title : `Create A ${title} Game`}
-      </Button>
+      {title === "Click to Join a Game" && (
+        <Button variant="outlined" onClick={handleClickOpen} size="large">
+          {title}
+        </Button>
+      )}
       <Dialog
         open={openStatus}
         onClose={handleClose}

@@ -146,6 +146,19 @@ function App() {
   };
 
   const handleBroadcastGame = async (gameType) => {
+    let data;
+    const getUserData = async () => {
+      try {
+        const response = await fetch("http://localhost:8000/getUserData");
+        data = await response.json();
+      } catch (error) {
+        console.error("There was a problem with the fetch operation:", error);
+      }
+    };
+
+    await getUserData();
+    if (!data || data.username == "") return;
+
     const gameRequest = {
       User: username,
       GameType: gameType,

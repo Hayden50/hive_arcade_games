@@ -49,14 +49,17 @@ function App() {
             console.log('YOU TIED')
           }
           let remoteId = dataArr[0].split(',')[0]
-          var conn2 = peerInstance.current.connect(remoteId)
-          conn2.on('open', function() {
-            // Send messages
-            console.log('Connection', conn)
-            conn2.send('Opponent: ', wordHuntScore);
-          });
-          //console.log(dataArr[0].split(',')[0])
-          setWordHuntScore(0)
+          setOpponentId(remoteId)
+          // var conn2 = peerInstance.current.connect(remoteId)
+          // console.log('here'+wordHuntScore)
+          // conn2.on('open', function() {
+          //   // Send messages
+          //   console.log('Mywordhuntscore' + wordHuntScore)
+          //   conn2.send('Opponent: ' + wordHuntScore);
+          //   //setWordHuntScore(0)
+          // });
+          // //console.log(dataArr[0].split(',')[0])
+          // //setWordHuntScore(0)
         }
       });
     });
@@ -66,11 +69,21 @@ function App() {
   }, [])
 
   useEffect(() => {
+    if(opponentId) {
+      console.log(opponentId)
+      var conn2 = peerInstance.current.connect(opponentId)
+      conn2.on('open', function() {
+        conn2.send('Opponent: '+wordHuntScore)
+      })
+    }
+  },[opponentId])
+
+  useEffect(() => {
     // console.log(connInstance.current, wordHuntOpen)
     if(connInstance.current && !wordHuntOpen) {
       connInstance.current.send(peerId+', Score:' + wordHuntScore)
       //connInstance.current.send('Opponent Score:' + wordHuntScore)
-      setWordHuntScore(0)
+      //setWordHuntScore(0)
     }
   }, [wordHuntOpen])
 

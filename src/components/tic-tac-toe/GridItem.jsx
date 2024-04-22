@@ -9,26 +9,53 @@ const GridItem = ({
   board,
   updateMyTurn,
   setMessage,
+  connInstance,
 }) => {
   const [clickable, setClickable] = useState(true);
   const [value, setValue] = useState(null);
 
+  // Updates the board when the opponent makes a move
+  useEffect(() => {
+    const row = Math.floor(id / 3);
+    const col = id % 3;
+    if (board[row][col] != 0 && value == null) {
+      setValue(board[row][col] === -1 ? "O" : "X");
+    }
+    const hold = myTurn;
+    useTurn();
+    updateMyTurn(hold);
+  }),
+    [id, board, value];
+
+  // Handles selecting a square on the board
   const handleClick = () => {
-    if (clickable && myTurn) {
-      setClickable(false);
-      // Visually update the board
-      setValue(amX ? "x" : "o");
+    if (clickable && myTurn && value === null) {
+      const row = Math.floor(id / 3);
+      const col = id % 3;
+      if (board[row][col] === 0) {
+        setClickable(false);
+        const currVal = amX ? "X" : "O";
+        // Visually update the board
+        setValue(currVal);
 
-      // Update the invisible-actual board
-      setBoard((prevBoard) => {
-        const newBoard = [...prevBoard];
-        const row = Math.floor(id / 3);
-        const col = id % 3;
-        newBoard[row][col] = amX ? 1 : -1; // Assign 'x' if amX is true, otherwise assign 'o'
-        return newBoard;
-      });
+        // Update the invisible-actual board
+        setBoard((prevBoard) => {
+          const newBoard = [...prevBoard];
+          newBoard[row][col] = amX ? 1 : -1; // Assign 'x' if amX is true, otherwise assign 'o'
+          return newBoard;
+        });
 
-      useTurn();
+        useTurn();
+        connInstance.current.send(currVal + ":" + id);
+
+        for (let i = 0; i < board.length; i++) {
+          let rowString = "";
+          for (let j = 0; j < board[0].length; j++) {
+            rowString += board[i][j] + " | ";
+          }
+          console.log(rowString);
+        }
+      }
     }
   };
 
@@ -100,9 +127,11 @@ const GridItem = ({
         if (amX) {
           updateTrophies(-10);
           setMessage("You lose!! :(");
+          setClickable(false);
         } else {
           updateTrophies(10);
           setMessage("You Win!! :)");
+          setClickable(false);
         }
         break;
       case 0:
@@ -111,13 +140,16 @@ const GridItem = ({
         if (amX) {
           updateTrophies(10);
           setMessage("You Win!! :)");
+          setClickable(false);
         } else {
           updateTrophies(-10);
           setMessage("You lose!! :(");
+          setClickable(false);
         }
         break;
       case 2:
         setMessage("It's a Tie!");
+        setClickable(false);
         break;
     }
     // Handle results of game state

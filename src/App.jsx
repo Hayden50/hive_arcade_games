@@ -215,7 +215,12 @@ function App() {
         title="Word Hunt"
         duration={30000}
         gameComponent={
-          <WordHunt score={wordHuntScore} setScore={setWordHuntScore} />
+          <WordHunt
+            score={wordHuntScore}
+            setScore={setWordHuntScore}
+            connInstance={connInstance}
+            peerId={peerId}
+          />
         }
         openStatus={wordHuntOpen}
         setOpenStatus={setWordHuntOpen}

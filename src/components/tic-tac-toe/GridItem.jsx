@@ -48,14 +48,6 @@ const GridItem = ({
 
         useTurn();
         connInstance.current.send(currVal + ":" + id);
-
-        for (let i = 0; i < board.length; i++) {
-          let rowString = "";
-          for (let j = 0; j < board[0].length; j++) {
-            rowString += board[i][j] + " | ";
-          }
-          console.log(rowString);
-        }
       }
     }
   };

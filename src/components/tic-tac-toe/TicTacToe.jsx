@@ -33,6 +33,10 @@ const TicTacToe = ({
 
   useEffect(() => {
     designateLetter();
+  }),
+    [];
+
+  useEffect(() => {
     connInstance.current.on("data", (data) => {
       console.log("Received: " + data);
       const dataArr = data.split(":");
@@ -56,7 +60,8 @@ const TicTacToe = ({
         updateMyTurn(true);
       }
     });
-  });
+  }),
+    [];
 
   const designateLetter = () => {
     const localIdNumber = stringToNumber(localPeerId);
@@ -64,7 +69,15 @@ const TicTacToe = ({
 
     setAmX(localIdNumber > connIdNumber);
 
-    if (amX) {
+    let boardEmpty = true;
+    for (let i = 0; i < board.length; i++) {
+      for (let j = 0; j < board[0].length; j++) {
+        if (board[i][j] !== 0) boardEmpty = false;
+      }
+    }
+
+    if (amX && boardEmpty) {
+      console.log("DESIGNATING X STARTER");
       updateMyTurn(true);
     }
   };

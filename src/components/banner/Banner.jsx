@@ -70,6 +70,8 @@ const Banner = ({ updateTrophies }) => {
         }
       })
       .catch((error) => console.log(error));
+
+    setTrophies(0);
   };
 
   useEffect(() => {

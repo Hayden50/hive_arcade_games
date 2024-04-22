@@ -7,7 +7,7 @@ import TextField from "@mui/material/TextField";
 import Modal from "@mui/material/Modal";
 import Button from "@mui/material/Button";
 
-const Banner = () => {
+const Banner = ({ updateTrophies }) => {
   const [username, setUsername] = useState("");
   const [trophies, setTrophies] = useState(0);
   const [textFieldValue, setTextFieldValue] = useState("");
@@ -85,7 +85,7 @@ const Banner = () => {
     };
 
     getUserData();
-  }, []); // Empty dependency array ensures the effect runs only on mount
+  }, [updateTrophies]); // Empty dependency array ensures the effect runs only on mount
 
   return (
     <>

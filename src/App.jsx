@@ -10,7 +10,6 @@ import TicTacToe from "./components/tic-tac-toe/TicTacToe";
 
 function App() {
   const [peerId, setPeerId] = useState("");
-  const [opponentId, setOpponentId] = useState("");
   const [username, setUsername] = useState("");
   const [wordHuntOpen, setWordHuntOpen] = useState(false);
   const [tictactoeOpen, setTictactoeOpen] = useState(false);
@@ -136,8 +135,10 @@ function App() {
         // SENDER SIDE:
         if (dataList[0] == "WordHunt") {
           setWordHuntOpen(true);
+          setGameJoinOpen(false);
         } else if (dataList[0] === "TicTacToe") {
           setTictactoeOpen(true);
+          setGameJoinOpen(false);
         }
       });
     }

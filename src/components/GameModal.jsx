@@ -29,7 +29,6 @@ const GameModal = ({
     }, duration);
 
     return () => {
-      console.log("OUT OF TIME");
       clearTimeout(timer);
     };
   }, [duration]);

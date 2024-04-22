@@ -1,13 +1,16 @@
-import React from "react";
 import { useEffect, useState } from "react";
 import Grid from "./Grid";
 import Alert from "./Alert";
 import { Button } from "@mui/material";
 import checkWord from "check-if-word";
+import Box from "@mui/material/Box";
+import Modal from "@mui/material/Modal";
 
 export default function WordHunt({ score, setScore, connInstance, peerId }) {
   const words = checkWord("en");
   const [guess, setGuess] = useState("");
+  const [resultsOpen, setResultsOpen] = useState(false);
+  const [opponentVal, setOpponentVal] = useState(0);
   const [matrix, setMatrix] = useState(
     Array.from({ length: 4 }, () =>
       Array.from({ length: 4 }, () =>
@@ -18,7 +21,6 @@ export default function WordHunt({ score, setScore, connInstance, peerId }) {
   const [wordExist, setWordExist] = useState("");
   const [pointsForWord, setPointsForWords] = useState(0);
   const [foundWords, setFoundWords] = useState({});
-
   const [timerExpired, setTimerExpired] = useState(false);
 
   const handleSubmit = (currWord) => {
@@ -73,13 +75,7 @@ export default function WordHunt({ score, setScore, connInstance, peerId }) {
 
       if (commandType === "RES") {
         const oppVal = parseInt(dataArr[1]);
-        if (score == oppVal) {
-          console.log(score + ":" + oppVal + " TIE");
-        } else if (score < oppVal) {
-          console.log(score + ":" + oppVal + " LOSS");
-        } else {
-          console.log(score + ":" + oppVal + " WIN");
-        }
+        setOpponentVal(oppVal);
       }
     });
   }),
@@ -100,26 +96,63 @@ export default function WordHunt({ score, setScore, connInstance, peerId }) {
       // For example, close the modal or trigger a function
       console.log("WORD HUNT SCORE: " + score);
       connInstance.current.send("RES:" + score);
+      setResultsOpen(true);
       // Add any actions you want to perform here
     }
   }, [timerExpired]);
 
+  const getResultTag = (currScore, oppScore) => {
+    if (currScore == oppScore) {
+      return "It's a Tie!";
+    } else if (currScore < oppScore) {
+      return "You Lose!";
+    } else {
+      return "You Win!";
+    }
+  };
+
   return (
     <>
-      <h1 className="score">Score: {score}</h1>
-      <Grid
-        board={matrix}
-        setBoard={setMatrix}
-        guess={guess}
-        setGuess={setGuess}
-      ></Grid>
-      <h1 className="currentGuess">{guess}</h1>
-      <Button onClick={() => handleSubmit(guess)}>Submit</Button>
-      <Alert
-        success={wordExist}
-        points={pointsForWord}
-        setSuccess={setWordExist}
-      />
+      {resultsOpen && (
+        <div>
+          <h1>{getResultTag(score, opponentVal)}</h1>
+          <div>Your Score: {score}</div>
+          <div>Opponent Score: {opponentVal}</div>
+        </div>
+      )}
+
+      {!resultsOpen && (
+        <>
+          <h1 className="score">Score: {score}</h1>
+          <Grid
+            board={matrix}
+            setBoard={setMatrix}
+            guess={guess}
+            setGuess={setGuess}
+          ></Grid>
+          <h1 className="currentGuess">{guess}</h1>
+          <Button onClick={() => handleSubmit(guess)}>Submit</Button>
+          <Alert
+            success={wordExist}
+            points={pointsForWord}
+            setSuccess={setWordExist}
+          />
+        </>
+      )}
     </>
   );
 }
+
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  height: 600,
+  bgcolor: "background.paper",
+  boxShadow: 24,
+  p: 4,
+  display: "flex",
+  flexDirection: "column",
+};

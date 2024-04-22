@@ -19,23 +19,50 @@ function App() {
   const peerInstance = useRef(null);
   const connInstance = useRef(null);
 
+  // On startup, get the user's data and save it to a local variable
+  useEffect(() => {
+    const getUserData = async () => {
+      try {
+        const response = await fetch("http://localhost:8000/getUserData");
+        const data = await response.json();
+        setUsername(data.username);
+      } catch (error) {
+        console.error("There was a problem with the fetch operation:", error);
+      }
+    };
+
+    getUserData();
+  }, []); // Empty dependency array ensures the effect runs only on mount
+
+  // Generate all information about the local network connection and define listeners
+  // for possible actions
   useEffect(() => {
     const peer = new Peer();
 
+    // On creation of peer, save the peer ID
     peer.on("open", (id) => {
       setPeerId(id);
     });
+
     peerInstance.current = peer;
+
+    // On connection to another peer, save connection instance & set info on
+    // what happens when there is data transmission
     peer.on("connection", (conn) => {
       console.log("Connection received from peer:", conn.peer);
       connInstance.current = conn;
+
+      // On data transmission reception, check what the data includes and respond
+      // accordingly. RECEIVER SIDE:
       conn.on("data", (data) => {
-        console.log("Received", data);
+        // console.log("Received", data);
         if (data.includes("WordHunt")) {
           setWordHuntOpen(true);
+        } else if (data.includes("TicTacToe")) {
+          setTictactoeOpen(true);
         }
+
         if (data.includes("Score")) {
-          // setWordHuntOpen(false)
           let dataArr = data.split(":");
           if (dataArr[1] > wordHuntScore) {
             console.log("YOU LOST");
@@ -44,6 +71,7 @@ function App() {
           } else {
             console.log("YOU TIED");
           }
+
           let remoteId = dataArr[0].split(",")[0];
           var conn2 = peerInstance.current.connect(remoteId);
           conn2.on("open", function () {
@@ -61,37 +89,15 @@ function App() {
     };
   }, []);
 
+  // If Word Hunt closes, send over the score and then reset the local score to 0
   useEffect(() => {
-    // console.log(connInstance.current, wordHuntOpen)
     if (connInstance.current && !wordHuntOpen) {
       connInstance.current.send(peerId + ", Score:" + wordHuntScore);
-      //connInstance.current.send('Opponent Score:' + wordHuntScore)
       setWordHuntScore(0);
     }
   }, [wordHuntOpen]);
 
-  useEffect(() => {
-    const getUserData = async () => {
-      try {
-        const response = await fetch("http://localhost:8000/getUserData");
-        const data = await response.json();
-        setUsername(data.username);
-      } catch (error) {
-        console.error("There was a problem with the fetch operation:", error);
-      }
-    };
-
-    getUserData();
-  }, []); // Empty dependency array ensures the effect runs only on mount
-
-  const broadcastGame = async () => {
-    fetch("http://localhost:8000/broadcast")
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data.Data);
-      });
-  };
-
+  // Async function to take a game from the list of games and accept it
   const acceptGame = async (data) => {
     let dataList = data.split(":");
     // Only allow you to accept a game if you didn't create it
@@ -101,7 +107,8 @@ function App() {
         gameType: dataList[0],
         peerId: dataList[2],
       };
-      //Remove game from gameslist in backend so no one else can play
+
+      // Remove game from gameslist in backend so no one else can play
       fetch("http://localhost:8000/acceptGame", {
         method: "POST",
         headers: {
@@ -113,15 +120,24 @@ function App() {
         .then((data) => {
           console.log(data.Data);
         });
-      //Form the connection with the remote peer
+
+      // Form the connection with the remote peer
+      // dataList[2] is the peerID of the person who created the game
       var conn = peerInstance.current.connect(dataList[2]);
       connInstance.current = conn;
       conn.on("open", function () {
         // Send messages
         console.log("Connection", conn);
+
+        // This is the specific string that the receiver sees to open
         conn.send("Accepted " + dataList[0] + " Game!");
+
+        // Check what the name of the game is and open that game
+        // SENDER SIDE:
         if (dataList[0] == "WordHunt") {
           setWordHuntOpen(true);
+        } else if (dataList[0] === "TicTacToe") {
+          setTictactoeOpen(true);
         }
       });
     }
@@ -186,7 +202,9 @@ function App() {
       <GameModal
         id="WordHunt"
         title="Tic-Tac-Toe"
-        gameComponent={<TicTacToe />}
+        gameComponent={
+          <TicTacToe connInstance={connInstance} peerId={peerId} />
+        }
         setOpenStatus={setTictactoeOpen}
         openStatus={tictactoeOpen}
       />

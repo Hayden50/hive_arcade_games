@@ -33,13 +33,13 @@ def acceptGame():
         encodedData = gameData['gameType']+":"+gameData['requestingUser']+":"+gameData['peerId']
         gamesList.remove(encodedData)
         #Now we need to tell all other servers to remove this data from their games list
-        UDP_IP = "255.255.255.255"  # Broadcasting IP address
+        UDP_IP = "192.168.220.255"  # Broadcasting IP address
         UDP_PORT = 5008
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         try:
             # Send the broadcast message
-            sock.sendto(("Remove -"+encodedData).encode(), ('<broadcast>', UDP_PORT))
+            sock.sendto(("Remove -"+encodedData).encode(), (UDP_IP, UDP_PORT))
             #sock.sendto(gameRequestMessage.encode(), (UDP_IP, UDP_PORT))
             #sock.sendto(gameRequestMessage.encode(), ('128.61.6.121', 5005))
             print(encodedData)
@@ -49,14 +49,19 @@ def acceptGame():
             sock.close()
             return {'Data': encodedData}
 
-
+@app.route("/removeNode", methods=['POST'])
+def removeNode():
+    if request.method == 'POST':
+        gameData = request.get_json()
+        gamesList.remove(gameData)
+        return {'Data': gameData}
 
 #This route is for when a user on the frontend creates a game
 #This game will be broadcast to all other nodes on the network currently
 @app.route("/broadcast", methods=['POST'])
 def broadcast():
     #Set up the UDP socket
-    UDP_IP = "255.255.255.255"  # Broadcasting IP address
+    UDP_IP = "192.168.220.255"  # Broadcasting IP address
     UDP_PORT = 5008
     #MESSAGE = "Hello, nodes!"
 
@@ -79,7 +84,7 @@ def broadcast():
 
     try:
         # Send the broadcast message
-        sock.sendto(gameRequestMessage.encode(), ('<broadcast>', UDP_PORT))
+        sock.sendto(gameRequestMessage.encode(), (UDP_IP, UDP_PORT))
         #sock.sendto(gameRequestMessage.encode(), (UDP_IP, UDP_PORT))
         #sock.sendto(gameRequestMessage.encode(), ('128.61.6.121', 5005))
         print(gameRequestMessage)

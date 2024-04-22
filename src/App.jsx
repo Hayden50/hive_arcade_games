@@ -1,29 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 import "./App.css";
 import GameModal from "./components/GameModal";
-import TicTacToe from "./components/tic-tac-toe/TicTacToe";
-import WordHunt from "./components/WordHunt";
-import {
-  Button,
-  IconButton,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemText,
-} from "@mui/material";
-import ReplayIcon from "@mui/icons-material/Replay";
-import CreateGame from "./components/CreateGame";
+import GamesList from "./components/GamesList";
+import { Button } from "@mui/material";
 import Peer from "peerjs";
 import Banner from "./components/banner/Banner";
-import GamesList from "./components/GamesList";
 
 function App() {
-  const [existingGames, setExistingGames] = useState([]);
   const [peerId, setPeerId] = useState("");
   const [opponentId, setOpponentId] = useState("");
+  const [username, setUsername] = useState("");
   const [wordHuntOpen, setWordHuntOpen] = useState(false);
-  const [tictactoeOpen, setTictactoeOpen] = useState(false);
-  const [gameStartOpen, setGameStartOpen] = useState(false);
+  const [gameJoinOpen, setGameJoinOpen] = useState(false);
   const [wordHuntScore, setWordHuntScore] = useState(0);
   const peerInstance = useRef(null);
   const connInstance = useRef(null);
@@ -38,7 +26,6 @@ function App() {
     peer.on("connection", (conn) => {
       console.log("Connection received from peer:", conn.peer);
       connInstance.current = conn;
-      //console.log('Connection', conn)
       conn.on("data", (data) => {
         console.log("Received", data);
         if (data.includes("WordHunt")) {
@@ -80,19 +67,24 @@ function App() {
     }
   }, [wordHuntOpen]);
 
+  useEffect(() => {
+    const getUserData = async () => {
+      try {
+        const response = await fetch("http://localhost:8000/getUserData");
+        const data = await response.json();
+        setUsername(data.username);
+      } catch (error) {
+        console.error("There was a problem with the fetch operation:", error);
+      }
+    };
+
+    getUserData();
+  }, []); // Empty dependency array ensures the effect runs only on mount
+
   const broadcastGame = async () => {
     fetch("http://localhost:8000/broadcast")
       .then((res) => res.json())
       .then((data) => {
-        console.log(data.Data);
-      });
-  };
-
-  const findGames = async () => {
-    fetch("http://localhost:8000/findNodes", { method: "GET" })
-      .then((res) => res.json())
-      .then((data) => {
-        setExistingGames(data.Data);
         console.log(data.Data);
       });
   };
@@ -132,6 +124,25 @@ function App() {
     }
   };
 
+  const handleBroadcastGame = async (gameType) => {
+    const gameRequest = {
+      User: username,
+      GameType: gameType,
+      PeerId: peerId,
+    };
+    fetch("http://localhost:8000/broadcast", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(gameRequest),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data.Data);
+      });
+  };
+
   return (
     <div className="container">
       <Banner />
@@ -141,51 +152,33 @@ function App() {
           A decentralized game suite for Georgia Tech students
         </p>
       </div>
-      <IconButton variant="outlined" onClick={findGames}>
-        <ReplayIcon></ReplayIcon>
-      </IconButton>
       <div className="modal-button">
-        <GameModal
-          id="WordHunt "
-          key={wordHuntOpen}
-          title="Word Hunt"
-          duration={30000}
-          gameComponent={
-            <WordHunt score={wordHuntScore} setScore={setWordHuntScore} />
-          }
-          openStatus={wordHuntOpen}
-          setOpenStatus={setWordHuntOpen}
-        />
+        <Button
+          variant="outlined"
+          onClick={() => handleBroadcastGame("WordHunt")}
+        >
+          Create a Word Hunt Game
+        </Button>
       </div>
+
       <div className="modal-button">
-        <GameModal
-          id="WordHunt"
-          title="Tic-Tac-Toe"
-          gameComponent={<TicTacToe />}
-          setOpenStatus={setTictactoeOpen}
-          openStatus={tictactoeOpen}
-        />
+        <Button
+          variant="outlined"
+          onClick={() => handleBroadcastGame("TicTacToe")}
+        >
+          Create a Tic-Tac-Toe Game
+        </Button>
       </div>
+
       <div className="modal-button">
         <GameModal
           id="CreateGame"
-          title="Create Game"
-          setOpenStatus={setGameStartOpen}
-          gameComponent={<CreateGame peerId={peerId} />}
-          openStatus={gameStartOpen}
+          title="Click to Join a Game"
+          setOpenStatus={setGameJoinOpen}
+          gameComponent={<GamesList acceptGame={acceptGame} />}
+          openStatus={gameJoinOpen}
         />
       </div>
-      <List>
-        {existingGames.map(function (data) {
-          return (
-            <ListItem disablePadding key={data}>
-              <ListItemButton onClick={() => acceptGame(data)}>
-                <ListItemText primary={data} />
-              </ListItemButton>
-            </ListItem>
-          );
-        })}
-      </List>
     </div>
   );
 }

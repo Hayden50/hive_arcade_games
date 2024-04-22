@@ -3,9 +3,6 @@ import Grid from "./Grid";
 import Alert from "./Alert";
 import { Button } from "@mui/material";
 import checkWord from "check-if-word";
-import Box from "@mui/material/Box";
-import Modal from "@mui/material/Modal";
-import { Login } from "@mui/icons-material";
 import { useRef } from "react";
 
 export default function WordHunt({
@@ -102,7 +99,6 @@ export default function WordHunt({
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      // Set timerExpired to true when timer runs out
       setTimerExpired(true);
     }, 29500); // Assuming 30000 milliseconds (30 seconds) is your timer duration
     // Clear the timer if the component unmounts or when the modal is closed
@@ -111,12 +107,8 @@ export default function WordHunt({
 
   useEffect(() => {
     if (timerExpired) {
-      // Perform actions when the timer runs out
-      // For example, close the modal or trigger a function
-      console.log("WORD HUNT SCORE: " + score);
       connInstance.current.send("RES:" + score);
       setResultsOpen(true);
-      // Add any actions you want to perform here
     }
   }, [timerExpired]);
 
@@ -132,19 +124,13 @@ export default function WordHunt({
 
   useEffect(
     () => () => {
-      console.log(
-        "Score: " + scoreRef.current,
-        " OPP: " + opponentScoreRef.current,
-      );
       let updateTrophyReq;
       if (scoreRef.current > opponentScoreRef.current) {
-        console.log("ADDING");
         updateTrophyReq = {
           trophies: 10,
         };
       }
       if (scoreRef.current < opponentScoreRef.current) {
-        console.log("REMOVING");
         updateTrophyReq = {
           trophies: -10,
         };

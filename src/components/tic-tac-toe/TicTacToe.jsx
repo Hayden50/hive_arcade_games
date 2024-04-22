@@ -20,6 +20,7 @@ const TicTacToe = ({ connInstance, peerId }) => {
   }, []);
 
   useEffect(() => {
+    designateLetter();
     connInstance.current.on("data", (data) => {
       console.log("Received: " + data);
       const dataArr = data.split(":");
@@ -40,15 +41,12 @@ const TicTacToe = ({ connInstance, peerId }) => {
           return newBoard;
         });
 
-        // UPDATE THE GRID ITEM WITH THE RELEVANT ID HERE
-        //
-
         updateMyTurn(true);
       }
     });
   });
 
-  const tempFunc = () => {
+  const designateLetter = () => {
     const localIdNumber = stringToNumber(localPeerId);
     const connIdNumber = stringToNumber(connPeerId);
 
@@ -56,10 +54,7 @@ const TicTacToe = ({ connInstance, peerId }) => {
 
     if (amX) {
       updateMyTurn(true);
-      console.log("MY TURN");
     }
-
-    console.log(amX ? "given X" : "given O");
   };
 
   const stringToNumber = (str) => {
@@ -72,8 +67,10 @@ const TicTacToe = ({ connInstance, peerId }) => {
 
   return (
     <div>
-      <button onClick={tempFunc}>click me</button>
-      <h1>{message}</h1>
+      <div className="word-box">
+        <p>{message}</p>
+        <p>{amX ? "Your Letter: X" : "Your Letter: O"}</p>
+      </div>
       <Grid container spacing={2} sx={borderStyling}>
         {[...Array(9)].map((_, index) => (
           <Grid key={index} xs={4} minHeight={160}>

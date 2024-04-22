@@ -9,3 +9,9 @@
 .marking {
     font-size: 3em;
 }
+
+.word-box {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
